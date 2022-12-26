@@ -17,7 +17,6 @@ namespace CarPark
             Console.WriteLine("Type: " + Type);
             Console.WriteLine("Manufacturer: " + Manufacturer);
             Console.WriteLine("GearsNumber: " + GearsNumber + "\n");
-            //Console.WriteLine("\n");
         }
     }
 }

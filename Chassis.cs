@@ -17,7 +17,6 @@ namespace CarPark
             Console.WriteLine("Wheels Number: " + WheelsNumber);
             Console.WriteLine("Serial Number: " + SerialNumber);
             Console.WriteLine("Load: " + Load + "kg\n");
-            //Console.WriteLine("\n");
         }
     }
 }

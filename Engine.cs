@@ -24,7 +24,6 @@ namespace CarPark
             Console.WriteLine("Serial Number: " + SerialNumber);
             Console.WriteLine("Power: " + Power + "hp");
             Console.WriteLine("Volume: " + Volume + "l\n");
-            //Console.WriteLine("\n");
         }
     }
 }
