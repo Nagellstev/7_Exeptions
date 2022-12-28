@@ -1,9 +1,8 @@
 # CarPark
-The program manages a car park. For this purpose implemented the next entities as separate classes: 
- - "Engine" (includes the next fields: power, volume, type, serial number)
- - "Chassis" (wheels number, number, permissible load)
- - "Transmission" (type, number of gears, manufacturer)
-
-Implemented entities "Passenger car", "Truck", "Bus", "Scooter" using class described previously 
-(distinguished by unique fields) and provided the output of complete information about objects 
-of these types.
+Fill in a single collection containing objects of the type 
+"Truck", "Passenger car", "Bus", "Scooter" (from the previous OOP task) with different field values.
+Write the following information to the corresponding XML files:
+ - All information about all vehicles an engine capacity of which is more than 1.5 liters;
+ - Engine type, serial number and power rating for all buses and trucks;
+ - All information about all vehicles, grouped by transmission type. (Each transmission type 
+ written in separate file)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CarPark
 {
@@ -28,20 +29,50 @@ namespace CarPark
                 return chassis.Load;
             }
         }
-        public Engine engine = new Engine();
-        public Transmission transmission = new Transmission();
-        public Chassis chassis = new Chassis();
+        public Engine engine;
+        public Transmission transmission;
+        public Chassis chassis;
         public void CarPropertiesOutput()
         {
             Console.WriteLine(Model + " Characteristics: ");
-            Console.WriteLine("Color: " + Color);
-            Console.WriteLine("Max Speed: " + maxSpeed + "km/h");
-            Console.WriteLine("Power: " + Power + "hp");
-            Console.WriteLine("Max Load: " + MaxLoad + "kg\n");
+            Console.WriteLine("\tColor: " + Color);
+            Console.WriteLine("\tMax Speed: " + maxSpeed + "km/h");
+            Console.WriteLine("\tPower: " + Power + "hp");
+            Console.WriteLine("\tMax Load: " + MaxLoad + "kg\n");
             engine.EngineOutput();
             chassis.ChassisOutput();
             transmission.TransmissionOutput();
             Console.WriteLine("\n");
+        }
+        public Car(string model, string color, int maxSp, Engine eng, Transmission transm, Chassis chass)
+        {
+            Model = model;
+            Color = color;
+            maxSpeed = maxSp;
+            engine = eng;
+            transmission = transm;
+            chassis = chass;
+        }
+        public Car()
+        {
+            Model = "";
+            Color = "";
+            maxSpeed = 0;
+            engine = new Engine();
+            transmission = new Transmission();
+            chassis = new Chassis();
+        }
+        public XElement CarPropertiesXmlOutput()
+        {
+            XElement car = new XElement("Vehicle",
+                new XElement("Model", Model),
+                new XElement("Color", Color),
+                new XElement("maxSpeed", maxSpeed),
+                engine.EngineXmlOutput(),
+                chassis.ChassisXmlOutput(),
+                transmission.TransmissionXmlOutput()
+                ); 
+            return car;
         }
     }
 }

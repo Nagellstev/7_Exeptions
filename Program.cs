@@ -2,10 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CarPark
 {
@@ -13,85 +16,149 @@ namespace CarPark
     {
         static void Main()
         {
+            List<Car> cars = new List<Car>();
 
-            Car PassengerCar = new Car();
-            PassengerCar.Model = "Passenger Car";
-            PassengerCar.maxSpeed = 200;
-            PassengerCar.Color = "Blue";
+            Car PassengerCar = new Car(
+                "Passenger Car", "Blue", 200,
+                new Engine("Gas", 123, 180, 2.4m),
+                new Transmission("automatic", "ZF", 5),
+                new Chassis(4, 234, 2000)
+                );
+            cars.Add(PassengerCar);
 
-            PassengerCar.engine.EngineType = "Gas";
-            PassengerCar.engine.SerialNumber = 123;
-            PassengerCar.engine.Volume = 2.4m;
-            PassengerCar.engine.Power = 180;
+            Car Truck = new Car(
+                "Truck", "White", 120,
+                new Engine("Diesel", 345, 220, 6.4m),
+                new Transmission("manual", "Bonfiglioli", 12),
+                new Chassis(6, 456, 12000)
+                );
+            cars.Add(Truck);
 
-            PassengerCar.chassis.WheelsNumber = 4;
-            PassengerCar.chassis.Load = 2000;
-            PassengerCar.chassis.SerialNumber = 234;
+            Car Bus = new Car(
+                "Bus", "Grey", 140,
+                new Engine("Diesel", 567, 210, 5.4m),
+                new Transmission("manual", "Linda", 10),
+                new Chassis(4, 678, 8000)
+                );
+            cars.Add(Bus);
 
-            PassengerCar.transmission.Manufacturer = "ZF";
-            PassengerCar.transmission.GearsNumber = 5;
-            PassengerCar.transmission.Type = "automatic";
-
-            Car Truck = new Car();
-            Truck.Model = "Truck";
-            Truck.maxSpeed = 120;
-            Truck.Color = "White";
-
-            Truck.engine.EngineType = "Diesel";
-            Truck.engine.SerialNumber = 345;
-            Truck.engine.Volume = 6.4m;
-            Truck.engine.Power = 220;
-
-            Truck.chassis.WheelsNumber = 6;
-            Truck.chassis.Load = 12000;
-            Truck.chassis.SerialNumber = 456;
-
-            Truck.transmission.Manufacturer = "Bonfiglioli";
-            Truck.transmission.GearsNumber = 12;
-            Truck.transmission.Type = "manual";
-
-            Car Bus = new Car();
-            Bus.Model = "Bus";
-            Bus.maxSpeed = 140;
-            Bus.Color = "Grey";
-
-            Bus.engine.EngineType = "Diesel";
-            Bus.engine.SerialNumber = 567;
-            Bus.engine.Volume = 5.4m;
-            Bus.engine.Power = 210;
-
-            Bus.chassis.WheelsNumber = 4;
-            Bus.chassis.Load = 8000;
-            Bus.chassis.SerialNumber = 678;
-
-            Bus.transmission.Manufacturer = "Linda";
-            Bus.transmission.GearsNumber = 10;
-            Bus.transmission.Type = "manual";
-
-            Car Scooter = new Car();
-            Scooter.Model = "Scooter";
-            Scooter.maxSpeed = 80;
-            Scooter.Color = "Red";
-
-            Scooter.engine.EngineType = "Gas";
-            Scooter.engine.SerialNumber = 789;
-            Scooter.engine.Volume = 0.15m;
-            Scooter.engine.Power = 10;
-
-            Scooter.chassis.WheelsNumber = 2;
-            Scooter.chassis.Load = 200;
-            Scooter.chassis.SerialNumber = 890;
-
-            Scooter.transmission.Manufacturer = "CF";
-            Scooter.transmission.GearsNumber = 1;
-            Scooter.transmission.Type = "Variator";
+            Car Scooter = new Car(
+                "Scooter", "Red", 80,
+                new Engine("Gas", 789, 10, 0.15m),
+                new Transmission("variator", "CF", 1),
+                new Chassis(2, 890, 200)
+                );
+            cars.Add(Scooter);
 
             Console.WriteLine("Car Park\n");
             Console.WriteLine("\n");
-            PassengerCar.CarPropertiesOutput();
-            Truck.CarPropertiesOutput();
-            Bus.CarPropertiesOutput();
-            Scooter.CarPropertiesOutput();
+
+            foreach (Car car in cars)
+            {
+                car.CarPropertiesOutput();
+            }
+            /// <summary>
+            /// build XElement with cars with engine volume > 1.5l. 
+            /// Write it to the file "\bin\Debug\net6.0\HighVolVehicles.xml"
+            /// </summary>
+            #region 
+            var subsetHighVolVehicles = from theCar in cars
+                                        where theCar.engine.Volume > 1.5m
+                                        orderby theCar.engine.Volume
+                                        select theCar;
+
+            List<XElement> highVolVehicles = new List<XElement>();
+
+            foreach (Car car in subsetHighVolVehicles)
+            {
+                highVolVehicles.Add(car.CarPropertiesXmlOutput());
+            }
+
+            XElement HVV = new XElement("Vehicles", highVolVehicles);
+
+            XmlFileWriter(@"HighVolVehicles.xml", HVV);
+
+            #endregion
+
+            /// <summary>
+            /// build XElement with Engine type, serial number and power rating for all buses and trucks. 
+            /// Write it to the file "\bin\Debug\net6.0\BusesAndTrucks.xml"
+            /// <summary>
+            #region 
+            var subsetTrucksAndBuses = from theCar in cars
+                                       where (theCar.Model == "Truck") || (theCar.Model == "Bus")
+                                       orderby theCar.engine.Volume
+                                       select theCar;
+
+            List<XElement> trucksAndBuses = new List<XElement>();
+
+            foreach (Car car in subsetTrucksAndBuses)
+            {
+                XElement vehicle = new XElement(car.Model,
+                    new XElement("EngineType", car.engine.EngineType),
+                    new XElement("SerialNumber", car.engine.SerialNumber),
+                    new XElement("Power", car.engine.Power)
+                    );
+                trucksAndBuses.Add(vehicle);
+            }
+
+            XElement TB = new XElement("TrucksAndBuses", trucksAndBuses);
+
+            XmlFileWriter(@"TrucksAndBuses.xml", TB);
+
+            #endregion
+
+            /// <summary>
+            /// build XElement with information about all vehicles, grouped by transmission type. 
+            /// Write it to the file "\bin\Debug\net6.0\Transmission___.xml"
+            /// </summary>
+            #region
+
+            //create list with transmission types without duplicates
+            List<string> transmTypes = new List<string>();
+            foreach (Car car in cars)
+            {
+                transmTypes.Add(car.transmission.Type);
+            }
+            transmTypes = transmTypes.Distinct().ToList();
+            //
+
+            foreach (string trTy in transmTypes)
+            {
+                var subsetTransmType = from theCar in cars
+                                       where theCar.transmission.Type == trTy
+                                       orderby theCar.engine.Volume
+                                       select theCar;
+
+                List<XElement> trTyCars = new List<XElement>();
+                foreach (Car car in subsetTransmType)
+                {
+                    trTyCars.Add(car.CarPropertiesXmlOutput());
+                }
+
+                XElement TTY = new XElement(trTy, trTyCars);
+
+                XmlFileWriter(@"Transmission " + trTy + ".xml", TTY);
+
+            }
+
+            #endregion
+        }
+        public static void XmlFileWriter(string filename, XElement xe)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filename, false)
+                    )
+                {
+                    writer.WriteLine(xe);
+                    writer.Close();
+                }
+            }
+            catch (Exception)
+            {
+                // ignore
+            }
         }
     }
 }
