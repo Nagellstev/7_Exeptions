@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -246,6 +247,104 @@ namespace CarPark
                 InputNewChassis()
                 )
                 );
+        }
+        public static List<Car> LoadAutoByParameters(string filename)
+        {
+            Car carForComparision = InputNewCar();
+
+            List<Car> cars = new List<Car>();
+
+            foreach (XElement xElement in XElement.Load(filename).Elements("Vehicle"))
+            {
+
+                string engineType = "";
+                int engineSN = 0;
+                decimal power = 0;
+                decimal volume = 0;
+                string transmType = "";
+                string transmManuf = "";
+                int gearsNum = 0;
+                int wheelsNum = 0;
+                int chassisSN = 0;
+                decimal load = 0;
+
+                string model = xElement.Element("Model").Value;
+                int number = Convert.ToInt32(xElement.Element("Number").Value);
+                string color = xElement.Element("Color").Value;
+                int maxSpeed = Convert.ToInt32(xElement.Element("maxSpeed").Value);
+                foreach (XElement xElementL2 in xElement.Elements("Engine"))
+                {
+                    engineType = xElementL2.Element("EngineType").Value;
+                    engineSN = Convert.ToInt32(xElementL2.Element("SerialNumber").Value);
+                    power = Convert.ToDecimal(xElementL2.Element("Power").Value);
+                    volume = Convert.ToDecimal(xElementL2.Element("Volume").Value);
+                }
+                foreach (XElement xElementL2 in xElement.Elements("Transmission"))
+                {
+                    transmType = xElementL2.Element("Type").Value;
+                    transmManuf = xElementL2.Element("Manufacturer").Value;
+                    gearsNum = Convert.ToInt32(xElementL2.Element("GearsNumber").Value);
+                }
+                foreach (XElement xElementL2 in xElement.Elements("Chassis"))
+                {
+
+                    wheelsNum = Convert.ToInt32(xElementL2.Element("WheelsNumber").Value);
+                    chassisSN = Convert.ToInt32(xElementL2.Element("SerialNumber").Value);
+                    load = Convert.ToDecimal(xElementL2.Element("Load").Value);
+                }
+                Car loadedCar = new Car(
+                        model, number, color, maxSpeed,
+                        new Engine(engineType, engineSN, power, volume),
+                        new Transmission(transmType, transmManuf, gearsNum),
+                        new Chassis(wheelsNum, chassisSN, load)
+                        );
+                if (
+                    (carForComparision.Model == loadedCar.Model || carForComparision.Model == "") &&
+                    (carForComparision.Number == loadedCar.Number || carForComparision.Number == 0) &&
+                    (carForComparision.Color == loadedCar.Color || carForComparision.Color == "") &&
+                    (carForComparision.maxSpeed == loadedCar.maxSpeed || carForComparision.maxSpeed == 0) &&
+                    (carForComparision.engine.EngineType == loadedCar.engine.EngineType || carForComparision.engine.EngineType == "") &&
+                    (carForComparision.engine.SerialNumber == loadedCar.engine.SerialNumber || carForComparision.engine.SerialNumber == 0) &&
+                    (carForComparision.engine.Power == loadedCar.engine.Power || carForComparision.engine.Power == 0) &&
+                    (carForComparision.engine.Volume == loadedCar.engine.Volume || carForComparision.engine.Volume == 0) &&
+                    (carForComparision.transmission.Type == loadedCar.transmission.Type || carForComparision.transmission.Type == "") &&
+                    (carForComparision.transmission.Manufacturer == loadedCar.transmission.Manufacturer || carForComparision.transmission.Manufacturer == "") &&
+                    (carForComparision.transmission.GearsNumber == loadedCar.transmission.GearsNumber || carForComparision.transmission.GearsNumber == 0) &&
+                    (carForComparision.chassis.WheelsNumber == loadedCar.chassis.WheelsNumber || carForComparision.chassis.WheelsNumber == 0) &&
+                    (carForComparision.chassis.SerialNumber == loadedCar.chassis.SerialNumber || carForComparision.chassis.SerialNumber == 0) &&
+                    (carForComparision.chassis.Load == loadedCar.chassis.Load || carForComparision.chassis.Load == 0)
+                    )
+                {
+                    cars.Add(loadedCar);
+                }
+            }
+
+            return cars;
+        }
+        public static List<Car> GetAutoByParameters(List<Car> cars)
+        {
+            Car carForComparision = InputNewCar();
+
+            var selectedCars = from car in cars
+                                     where (
+                                     (carForComparision.Model == car.Model || carForComparision.Model == "") &&
+                                     (carForComparision.Number == car.Number || carForComparision.Number == 0) &&
+                                     (carForComparision.Color == car.Color || carForComparision.Color == "") &&
+                                     (carForComparision.maxSpeed == car.maxSpeed || carForComparision.maxSpeed == 0) &&
+                                     (carForComparision.engine.EngineType == car.engine.EngineType || carForComparision.engine.EngineType == "") &&
+                                     (carForComparision.engine.SerialNumber == car.engine.SerialNumber || carForComparision.engine.SerialNumber == 0) &&
+                                     (carForComparision.engine.Power == car.engine.Power || carForComparision.engine.Power == 0) &&
+                                     (carForComparision.engine.Volume == car.engine.Volume || carForComparision.engine.Volume == 0) &&
+                                     (carForComparision.transmission.Type == car.transmission.Type || carForComparision.transmission.Type == "") &&
+                                     (carForComparision.transmission.Manufacturer == car.transmission.Manufacturer || carForComparision.transmission.Manufacturer == "") &&
+                                     (carForComparision.transmission.GearsNumber == car.transmission.GearsNumber || carForComparision.transmission.GearsNumber == 0) &&
+                                     (carForComparision.chassis.WheelsNumber == car.chassis.WheelsNumber || carForComparision.chassis.WheelsNumber == 0) &&
+                                     (carForComparision.chassis.SerialNumber == car.chassis.SerialNumber || carForComparision.chassis.SerialNumber == 0) &&
+                                     (carForComparision.chassis.Load == car.chassis.Load || carForComparision.chassis.Load == 0)
+                                     )
+                                     select car;
+
+            return selectedCars.ToList();
         }
         static void XmlFileWriter(string filename, XElement xe)
         {
