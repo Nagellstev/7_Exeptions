@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace CarPark
@@ -22,11 +23,17 @@ namespace CarPark
             Console.WriteLine("\tInput Model:");
             model = Console.ReadLine();
             Console.WriteLine("\tNumber:");
-            int.TryParse(Console.ReadLine(), out number);
+            if (int.TryParse(Console.ReadLine(), out number) != true)
+            {
+                throw new AddExeption("Number is incorrect.");
+            }
             Console.WriteLine("\tColor:");
             color = Console.ReadLine();
             Console.WriteLine("\tInput Max Speed:");
-            int.TryParse(Console.ReadLine(), out maxSpeed);
+            if (int.TryParse(Console.ReadLine(), out maxSpeed) != true)
+            {
+                throw new AddExeption("Max Speed is incorrect.");
+            }
             return new Car(
                 model, number, color, maxSpeed,
                 InputNewEngine(),
@@ -34,7 +41,7 @@ namespace CarPark
                 InputNewChassis()
                 );
         }
-        static Engine InputNewEngine()
+        private static Engine InputNewEngine()
         {
             string type;
             int SN;
@@ -44,14 +51,23 @@ namespace CarPark
             Console.WriteLine("\tType:");
             type = Console.ReadLine();
             Console.WriteLine("\tSerial Number:");
-            int.TryParse(Console.ReadLine(), out SN);
+            if (!int.TryParse(Console.ReadLine(), out SN))
+            {
+                throw new AddExeption("Serial Number is incorrect.");
+            }
             Console.WriteLine("\tPower:");
-            decimal.TryParse(Console.ReadLine(), out power);
+            if (!decimal.TryParse(Console.ReadLine(), out power))
+            {
+                throw new AddExeption("Serial Number is incorrect.");
+            }
             Console.WriteLine("\tVolume:");
-            decimal.TryParse(Console.ReadLine(), out volume);
+            if (!decimal.TryParse(Console.ReadLine(), out volume))
+            {
+                throw new AddExeption("Serial Number is incorrect.");
+            }
             return new Engine(type, SN, power, volume);
         }
-        static Transmission InputNewTransmission()
+        private static Transmission InputNewTransmission()
         {
             string type;
             string manufacturer;
@@ -62,21 +78,33 @@ namespace CarPark
             Console.WriteLine("\tManufacturer:");
             manufacturer = Console.ReadLine();
             Console.WriteLine("\tGears Number:");
-            int.TryParse(Console.ReadLine(), out gearsNumber);
+            if (!int.TryParse(Console.ReadLine(), out gearsNumber))
+            {
+                throw new AddExeption("Gears Number is incorrect.");
+            }
             return new Transmission(type, manufacturer, gearsNumber);
         }
-        static Chassis InputNewChassis()
+        private static Chassis InputNewChassis()
         {
             int wheelsNumber;
             int SN;
             decimal load;
             Console.WriteLine("Input New Chassis:");
             Console.WriteLine("\tWheels Number:");
-            int.TryParse(Console.ReadLine(), out wheelsNumber);
+            if (int.TryParse(Console.ReadLine(), out wheelsNumber) != true)
+            {
+                throw new AddExeption("Wheels Number is incorrect.");
+            }
             Console.WriteLine("\tSerial Number:");
-            int.TryParse(Console.ReadLine(), out SN);
+            if (!int.TryParse(Console.ReadLine(), out SN))
+            {
+                throw new AddExeption("Serial Number is incorrect.");
+            }
             Console.WriteLine("\tMax Load:");
-            decimal.TryParse(Console.ReadLine(), out load);
+            if (!decimal.TryParse(Console.ReadLine(), out load))
+            {
+                throw new AddExeption("Serial Number is incorrect.");
+            }
             return new Chassis(wheelsNumber, SN, load);
         }
         public static void CarPropertiesOutput(Car car)
@@ -92,7 +120,7 @@ namespace CarPark
             TransmissionOutput(car.transmission);
             Console.WriteLine("\n");
         }
-        static void EngineOutput(Engine engine)
+        private static void EngineOutput(Engine engine)
         {
             Console.WriteLine("  Engine Characteristics: ");
             Console.WriteLine("\tType: " + engine.EngineType);
@@ -100,14 +128,14 @@ namespace CarPark
             Console.WriteLine("\tPower: " + engine.Power + "hp");
             Console.WriteLine("\tVolume: " + engine.Volume + "l\n");
         }
-        static void ChassisOutput(Chassis chassis)
+        private static void ChassisOutput(Chassis chassis)
         {
             Console.WriteLine("  Chassis Characteristics: ");
             Console.WriteLine("\tWheels Number: " + chassis.WheelsNumber);
             Console.WriteLine("\tSerial Number: " + chassis.SerialNumber);
             Console.WriteLine("\tLoad: " + chassis.Load + "kg\n");
         }
-        static void TransmissionOutput(Transmission transmission)
+        private static void TransmissionOutput(Transmission transmission)
         {
             Console.WriteLine("  Transmission Characteristics: ");
             Console.WriteLine("\tType: " + transmission.Type);
@@ -127,7 +155,7 @@ namespace CarPark
                 );
             return Xcar;
         }
-        static XElement EngineXmlOutput(Engine engine)
+        private static XElement EngineXmlOutput(Engine engine)
         {
             XElement Xengine = new XElement("Engine",
                 new XElement("EngineType", engine.EngineType),
@@ -137,7 +165,7 @@ namespace CarPark
                 );
             return Xengine;
         }
-        static XElement ChassisXmlOutput(Chassis chassis)
+        private static XElement ChassisXmlOutput(Chassis chassis)
         {
             XElement Xchassis = new XElement("Chassis",
                 new XElement("WheelsNumber", chassis.WheelsNumber.ToString()),
@@ -146,7 +174,7 @@ namespace CarPark
                 );
             return Xchassis;
         }
-        static XElement TransmissionXmlOutput(Transmission transmission)
+        private static XElement TransmissionXmlOutput(Transmission transmission)
         {
             XElement Xtransmission = new XElement("Transmission",
                 new XElement("Type", transmission.Type),
@@ -321,6 +349,93 @@ namespace CarPark
 
             return cars;
         }
+        public static List<Car> GetAutoByUserParameter(List<Car> cars, string parameter, string value)
+        {
+            string modelComp = "";
+            int numberComp = 0;
+            string colorComp = "";
+            int maxSpeedComp = 0;
+            string engineTypeComp = "";
+            int engineSnComp = 0;
+            decimal powerComp = 0;
+            decimal volumeComp = 0;
+            string transmTypeComp = "";
+            string transmManufComp = "";
+            int gearsNumComp = 0;
+            int wheelsNumComp = 0;
+            int chassisSnComp = 0;
+            decimal loadComp = 0;
+
+            switch (parameter)
+            {
+                case "Model":
+                    modelComp = value;
+                    break;
+                case "Number":
+                    int.TryParse(value, out numberComp);
+                    break;
+                case "Color":
+                    colorComp = value;
+                    break;
+                case "maxSpeed":
+                    int.TryParse(value, out maxSpeedComp);
+                    break;
+                case "EngineType":
+                    engineTypeComp = value;
+                    break;
+                case "SerialNumber":
+                    int.TryParse(value, out engineSnComp);
+                    break;
+                case "Power":
+                    decimal.TryParse(value, out powerComp);
+                    break;
+                case "Volume":
+                    decimal.TryParse(value, out volumeComp);
+                    break;
+                case "Type":
+                    transmTypeComp = value;
+                    break;
+                case "Manufacturer":
+                    transmManufComp = value;
+                    break;
+                case "GearsNumber":
+                    int.TryParse(value, out gearsNumComp);
+                    break;
+                case "WheelsNumber":
+                    int.TryParse(value, out wheelsNumComp);
+                    break;
+                case "ChassisSN":
+                    int.TryParse(value, out chassisSnComp);
+                    break;
+                case "Load":
+                    decimal.TryParse(value, out loadComp);
+                    break;
+                default:
+                    throw new IncorrectParameterExeption("Incorrect Parameter");
+                    //break;
+            }
+
+            var selectedCars = from car in cars
+                               where (
+                               (modelComp == car.Model || modelComp == "") &&
+                               (numberComp == car.Number || numberComp == 0) &&
+                               (colorComp == car.Color || colorComp == "") &&
+                               (maxSpeedComp == car.maxSpeed || maxSpeedComp == 0) &&
+                               (engineTypeComp == car.engine.EngineType || engineTypeComp == "") &&
+                               (engineSnComp == car.engine.SerialNumber || engineSnComp == 0) &&
+                               (powerComp == car.engine.Power || powerComp == 0) &&
+                               (volumeComp == car.engine.Volume || volumeComp == 0) &&
+                               (transmTypeComp == car.transmission.Type || transmTypeComp == "") &&
+                               (transmManufComp == car.transmission.Manufacturer || transmManufComp == "") &&
+                               (gearsNumComp == car.transmission.GearsNumber || gearsNumComp == 0) &&
+                               (wheelsNumComp == car.chassis.WheelsNumber || wheelsNumComp == 0) &&
+                               (chassisSnComp == car.chassis.SerialNumber || chassisSnComp == 0) &&
+                               (loadComp == car.chassis.Load || loadComp == 0)
+                               )
+                               select car;
+
+            return selectedCars.ToList();
+        }
         public static List<Car> GetAutoByParameters(List<Car> cars)
         {
             Car carForComparision = InputNewCar();
@@ -346,7 +461,7 @@ namespace CarPark
 
             return selectedCars.ToList();
         }
-        static void XmlFileWriter(string filename, XElement xe)
+        private static void XmlFileWriter(string filename, XElement xe)
         {
             try
             {
