@@ -11,6 +11,8 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using CarPark.Exeptions;
+using CarPark.Entities;
 
 namespace CarPark
 {
@@ -34,7 +36,7 @@ namespace CarPark
                 Console.WriteLine("\tr - replace car");
                 Console.WriteLine("\tg - get cars by parameter");
                 Console.WriteLine("\tu - get cars by user parameter");
-                Console.WriteLine("\tp - print cars in list");
+                Console.WriteLine("\tp - print all cars in list");
                 //Console.WriteLine("\to - print car by number");
                 Console.WriteLine("\te - exit\n");
                 switch (Console.ReadLine())
@@ -61,11 +63,36 @@ namespace CarPark
                         break;
                     case "d":
                         Console.WriteLine("Input number of car to delete from list:");
-                        ProcessingCarPark.DeleteCar(cars, Convert.ToInt32(Console.ReadLine()));
+                        try
+                        {
+                            ProcessingCarPark.DeleteCar(cars, Convert.ToInt32(Console.ReadLine()));
+                        }
+                        catch (RemoveAutoException e)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(e.Message + " Can't remove the car.");
+                            Console.ResetColor();
+                        }
                         break;
                     case "r":
                         Console.WriteLine("Input number of car to replace in list:");
-                        ProcessingCarPark.ReplaceCar(cars, Convert.ToInt32(Console.ReadLine()));
+                        if (!int.TryParse(Console.ReadLine(), out int carNumber))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Number is incorrect.");
+                            Console.ResetColor();
+                            break;
+                        }
+                        try
+                        {
+                            ProcessingCarPark.ReplaceCar(cars, carNumber);
+                        }
+                        catch (UpdateAutoException e)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(e.Message + " Can't update car.");
+                            Console.ResetColor();
+                        }
                         break;
                     case "p":
                         Console.WriteLine("Here's all cars in list:");
@@ -84,9 +111,11 @@ namespace CarPark
                             Console.WriteLine("Input name of parameter and value of parameter:");
                             cars = ProcessingCarPark.GetAutoByUserParameter(cars, Console.ReadLine(), Console.ReadLine());
                         }
-                        catch (IncorrectParameterExeption)
+                        catch (GetAutoByParameterException e)
                         {
-                            Console.WriteLine("Incorrect name of parameter");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(e.Message + " Can't output cars selected by parameter.");
+                            Console.ResetColor();
                         }
                         break;
                     case "e":

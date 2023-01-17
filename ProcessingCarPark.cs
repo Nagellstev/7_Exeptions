@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using CarPark.Exeptions;
+using CarPark.Entities;
 
 namespace CarPark
 {
@@ -247,6 +249,10 @@ namespace CarPark
                                         where theCar.Number == carNumber
                                         orderby theCar.Number
                                         select theCar;
+            if (carToDelete.Count() <= 0)
+            {
+                throw new RemoveAutoException("No cars with such number.");
+            }
             foreach (Car car in carToDelete)
             {
                 cars.Remove(car);
@@ -258,7 +264,14 @@ namespace CarPark
             string color;
             int maxSpeed;
 
-            DeleteCar(cars, carNumber);
+            var carToDelete = from theCar in cars
+                              where theCar.Number == carNumber
+                              orderby theCar.Number
+                              select theCar;
+            if (carToDelete.Count() <= 0)
+            {
+                throw new UpdateAutoException("No cars with such number.");
+            }
 
             Console.WriteLine("Input New Car:");
             Console.WriteLine("\tInput Model:");
@@ -266,15 +279,19 @@ namespace CarPark
             Console.WriteLine("\tColor:");
             color = Console.ReadLine();
             Console.WriteLine("\tInput Max Speed:");
-            int.TryParse(Console.ReadLine(), out maxSpeed);
+            if (!int.TryParse(Console.ReadLine(), out maxSpeed))
+            {
+                throw new UpdateAutoException("Number is incorrect.");
+            }
 
-            cars.Add(
-                new Car(model, carNumber, color, maxSpeed,
+            Car car = new Car(model, carNumber, color, maxSpeed,
                 InputNewEngine(),
                 InputNewTransmission(),
                 InputNewChassis()
-                )
                 );
+
+            DeleteCar(cars, carNumber);
+            cars.Add(car);
         }
         public static List<Car> LoadAutoByParameters(string filename)
         {
@@ -372,25 +389,40 @@ namespace CarPark
                     modelComp = value;
                     break;
                 case "Number":
-                    int.TryParse(value, out numberComp);
+                    if (!int.TryParse(value, out numberComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Number.");
+                    }
                     break;
                 case "Color":
                     colorComp = value;
                     break;
                 case "maxSpeed":
-                    int.TryParse(value, out maxSpeedComp);
+                    if (!int.TryParse(value, out maxSpeedComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Max Speed.");
+                    }
                     break;
                 case "EngineType":
                     engineTypeComp = value;
                     break;
-                case "SerialNumber":
-                    int.TryParse(value, out engineSnComp);
+                case "Engine SN":
+                    if (!int.TryParse(value, out engineSnComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Engine SN.");
+                    }
                     break;
                 case "Power":
-                    decimal.TryParse(value, out powerComp);
+                    if (!decimal.TryParse(value, out powerComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Power.");
+                    }
                     break;
                 case "Volume":
-                    decimal.TryParse(value, out volumeComp);
+                    if (!decimal.TryParse(value, out volumeComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Volume.");
+                    }
                     break;
                 case "Type":
                     transmTypeComp = value;
@@ -399,20 +431,32 @@ namespace CarPark
                     transmManufComp = value;
                     break;
                 case "GearsNumber":
-                    int.TryParse(value, out gearsNumComp);
+                    if (!int.TryParse(value, out gearsNumComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Gears Number.");
+                    }
                     break;
                 case "WheelsNumber":
-                    int.TryParse(value, out wheelsNumComp);
+                    if (!int.TryParse(value, out wheelsNumComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Wheels Number.");
+                    }
                     break;
-                case "ChassisSN":
-                    int.TryParse(value, out chassisSnComp);
+                case "Chassis SN":
+                    if (!int.TryParse(value, out chassisSnComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Chassis SN.");
+                    }
                     break;
                 case "Load":
-                    decimal.TryParse(value, out loadComp);
+                    if (!decimal.TryParse(value, out loadComp))
+                    {
+                        throw new GetAutoByParameterException("Incorrect Load.");
+                    }
                     break;
                 default:
-                    throw new IncorrectParameterExeption("Incorrect Parameter");
-                    //break;
+                    throw new GetAutoByParameterException("Parameter name is incorrect.");
+                    break;
             }
 
             var selectedCars = from car in cars
@@ -433,7 +477,10 @@ namespace CarPark
                                (loadComp == car.chassis.Load || loadComp == 0)
                                )
                                select car;
-
+            if (selectedCars == null || selectedCars.Count() <= 0 )
+            {
+                throw new GetAutoByParameterException("No cars with such parameter found.");
+            }
             return selectedCars.ToList();
         }
         public static List<Car> GetAutoByParameters(List<Car> cars)
@@ -459,6 +506,10 @@ namespace CarPark
                                      )
                                      select car;
 
+            if (selectedCars == null || selectedCars.Count() <= 0)
+            {
+                throw new GetAutoByParameterException("No cars with such parameters found.");
+            }
             return selectedCars.ToList();
         }
         private static void XmlFileWriter(string filename, XElement xe)
