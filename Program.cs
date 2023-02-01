@@ -1,5 +1,7 @@
 ﻿/// The program described in README.md
 
+using CarPark.Vehicles;
+using CarPark.VehicleDetails;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,46 +18,46 @@ namespace CarPark
     {
         static void Main()
         {
-            List<Car> cars = new List<Car>();
+            List<Vehicle> cars = new List<Vehicle>();
 
-            Car PassengerCar = new Car(
-                "Passenger Car", "Blue", 200,
+            PassengerCar passengerCar = new PassengerCar(
+                "Passenger Car", "Blue", 200, "Sedan", 
                 new Engine("Gas", 123, 180, 2.4m),
                 new Transmission("automatic", "ZF", 5),
                 new Chassis(4, 234, 2000)
                 );
-            cars.Add(PassengerCar);
+            cars.Add(passengerCar);
 
-            Car Truck = new Car(
-                "Truck", "White", 120,
+            Truck truck = new Truck(
+                "Truck", "White", 120, 6,
                 new Engine("Diesel", 345, 220, 6.4m),
                 new Transmission("manual", "Bonfiglioli", 12),
                 new Chassis(6, 456, 12000)
                 );
-            cars.Add(Truck);
+            cars.Add(truck);
 
-            Car Bus = new Car(
-                "Bus", "Grey", 140,
+            Bus bus = new Bus(
+                "Bus", "Grey", 140, 50,
                 new Engine("Diesel", 567, 210, 5.4m),
                 new Transmission("manual", "Linda", 10),
                 new Chassis(4, 678, 8000)
                 );
-            cars.Add(Bus);
+            cars.Add(bus);
 
-            Car Scooter = new Car(
-                "Scooter", "Red", 80,
+            Scooter scooter= new Scooter(
+                "Scooter", "Red", 80, "Disk",
                 new Engine("Gas", 789, 10, 0.15m),
                 new Transmission("variator", "CF", 1),
                 new Chassis(2, 890, 200)
                 );
-            cars.Add(Scooter);
+            cars.Add(scooter);
 
             Console.WriteLine("Car Park\n");
             Console.WriteLine("\n");
 
-            foreach (Car car in cars)
+            foreach (Vehicle car in cars)
             {
-                car.CarPropertiesOutput();
+                car.PropertiesOutput();
             }
             /// <summary>
             /// build XElement with cars with engine volume > 1.5l. 
@@ -69,9 +71,9 @@ namespace CarPark
 
             List<XElement> highVolVehicles = new List<XElement>();
 
-            foreach (Car car in subsetHighVolVehicles)
+            foreach (Vehicle car in subsetHighVolVehicles)
             {
-                highVolVehicles.Add(car.CarPropertiesXmlOutput());
+                highVolVehicles.Add(car.PropertiesXmlOutput());
             }
 
             XElement HVV = new XElement("Vehicles", highVolVehicles);
@@ -92,7 +94,7 @@ namespace CarPark
 
             List<XElement> trucksAndBuses = new List<XElement>();
 
-            foreach (Car car in subsetTrucksAndBuses)
+            foreach (Vehicle car in subsetTrucksAndBuses)
             {
                 XElement vehicle = new XElement(car.Model,
                     new XElement("EngineType", car.engine.EngineType),
@@ -116,7 +118,7 @@ namespace CarPark
 
             //create list with transmission types without duplicates
             List<string> transmTypes = new List<string>();
-            foreach (Car car in cars)
+            foreach (Vehicle car in cars)
             {
                 transmTypes.Add(car.transmission.Type);
             }
@@ -131,9 +133,9 @@ namespace CarPark
                                        select theCar;
 
                 List<XElement> trTyCars = new List<XElement>();
-                foreach (Car car in subsetTransmType)
+                foreach (Vehicle car in subsetTransmType)
                 {
-                    trTyCars.Add(car.CarPropertiesXmlOutput());
+                    trTyCars.Add(car.PropertiesXmlOutput());
                 }
 
                 XElement TTY = new XElement(trTy, trTyCars);

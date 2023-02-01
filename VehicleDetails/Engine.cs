@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace CarPark
+namespace CarPark.VehicleDetails
 {
     class Engine
     {
@@ -20,14 +18,7 @@ namespace CarPark
         public decimal Volume
         { get; set; }
 
-        public void EngineOutput()
-        {
-            Console.WriteLine("  Engine Characteristics: ");
-            Console.WriteLine("\tType: " + EngineType);
-            Console.WriteLine("\tSerial Number: " + SerialNumber);
-            Console.WriteLine("\tPower: " + Power + "hp");
-            Console.WriteLine("\tVolume: " + Volume + "l\n");
-        }
+
         public Engine(string engType, int SN, decimal pow, decimal vol)
         {
             EngineType = engType;
@@ -35,6 +26,7 @@ namespace CarPark
             Power = pow;
             Volume = vol;
         }
+
         public Engine()
         {
             EngineType = "";
@@ -42,6 +34,16 @@ namespace CarPark
             Power = 0;
             Volume = 0;
         }
+
+        public void EngineOutput()
+        {
+            Console.WriteLine($"Engine Characteristics: ");
+            Console.WriteLine($"Type: {EngineType}");
+            Console.WriteLine($"Serial Number: {SerialNumber}");
+            Console.WriteLine($"Power: {Power} hp");
+            Console.WriteLine($"Volume: {Volume} l\n");
+        }
+
         public XElement EngineXmlOutput()
         {
             XElement engine = new XElement("Engine",
