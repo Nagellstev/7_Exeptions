@@ -9,8 +9,9 @@ namespace CarPark.Exeptions
     public class AddExeption : Exception
     {
         public AddExeption() : base() { }
-        public AddExeption(string message) : base(message) { }
-        public AddExeption(string message, Exception inner) : base(message, inner) { }
 
+        public AddExeption(string message) : base(message) { }
+
+        public AddExeption(string message, Exception inner) : base(message, inner) { }
     }
 }

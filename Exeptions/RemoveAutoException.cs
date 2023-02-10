@@ -9,8 +9,9 @@ namespace CarPark.Exeptions
     internal class RemoveAutoException : Exception
     {
         public RemoveAutoException() { }
-        public RemoveAutoException(string message) : base(message) { }
-        public RemoveAutoException(string message, Exception inner) : base(message, inner) { }
 
+        public RemoveAutoException(string message) : base(message) { }
+
+        public RemoveAutoException(string message, Exception inner) : base(message, inner) { }
     }
 }

@@ -9,8 +9,9 @@ namespace CarPark.Exeptions
     internal class InitializationException : Exception
     {
         public InitializationException() { }
-        public InitializationException(string message) : base(message) { }
-        public InitializationException(string message, Exception inner) : base(message, inner) { }
 
+        public InitializationException(string message) : base(message) { }
+
+        public InitializationException(string message, Exception inner) : base(message, inner) { }
     }
 }

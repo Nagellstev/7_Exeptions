@@ -9,8 +9,9 @@ namespace CarPark.Exeptions
     internal class UpdateAutoException : Exception
     {
         public UpdateAutoException() { }
-        public UpdateAutoException(string message) : base(message) { }
-        public UpdateAutoException(string message, Exception inner) : base(message, inner) { }
 
+        public UpdateAutoException(string message) : base(message) { }
+
+        public UpdateAutoException(string message, Exception inner) : base(message, inner) { }
     }
 }
