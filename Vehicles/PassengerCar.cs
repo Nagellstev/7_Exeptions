@@ -13,7 +13,6 @@ namespace CarPark.Vehicles
         public string BodyType
         { get; set; }
 
-
         public PassengerCar(string model, string color, int maxSp, string bodyType, Engine eng, Transmission transm, Chassis chass)
         {
             Model = model;
@@ -44,9 +43,11 @@ namespace CarPark.Vehicles
             Console.WriteLine($"\tBody Type: {BodyType}");
             Console.WriteLine($"\tPower: {Power} hp");
             Console.WriteLine($"\tMax Load: {MaxLoad} kg\n");
+
             engine.EngineOutput();
             chassis.ChassisOutput();
             transmission.TransmissionOutput();
+
             Console.WriteLine("\n");
         }
 

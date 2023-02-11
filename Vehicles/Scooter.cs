@@ -13,7 +13,6 @@ namespace CarPark.Vehicles
         public string BrakesType
         { get; set; }
 
-
         public Scooter(string model, string color, int maxSp, string brakesType, Engine eng, Transmission transm, Chassis chass)
         {
             Model = model;
@@ -44,9 +43,11 @@ namespace CarPark.Vehicles
             Console.WriteLine($"Max Speed: {maxSpeed} km/h");
             Console.WriteLine($"Power: {Power} hp");
             Console.WriteLine($"Max Load: {MaxLoad} kg\n");
+
             engine.EngineOutput();
             chassis.ChassisOutput();
             transmission.TransmissionOutput();
+
             Console.WriteLine("\n");
         }
 

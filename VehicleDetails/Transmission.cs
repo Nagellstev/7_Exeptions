@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace CarPark.VehicleDetails
 {
-    class Transmission
+    public class Transmission
     {
         public string Type;
         public string Manufacturer;

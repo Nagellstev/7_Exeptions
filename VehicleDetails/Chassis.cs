@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace CarPark.VehicleDetails
 {
-    class Chassis
+    public class Chassis
     {
         public int WheelsNumber;
         public int SerialNumber;

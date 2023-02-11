@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 namespace CarPark
 {
-    class Program
+    public class Program
     {
         static void Main()
         {

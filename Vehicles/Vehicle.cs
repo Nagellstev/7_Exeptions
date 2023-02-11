@@ -9,7 +9,7 @@ using CarPark.VehicleDetails;
 
 namespace CarPark.Vehicles
 {
-    class Vehicle
+    public class Vehicle
     {
         public string Model
         { get; set; }

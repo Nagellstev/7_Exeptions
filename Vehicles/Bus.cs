@@ -13,7 +13,6 @@ namespace CarPark.Vehicles
         public int PassengerCaparcity
         { get; set; }
 
-
         public Bus(string model, string color, int maxSp, int passengerCaparcity, Engine eng, Transmission transm, Chassis chass)
         {
             Model = model;
@@ -44,9 +43,11 @@ namespace CarPark.Vehicles
             Console.WriteLine($"Max Speed: {maxSpeed} km/h");
             Console.WriteLine($"Power: {Power} hp");
             Console.WriteLine($"Max Load: {MaxLoad} kg\n");
+
             engine.EngineOutput();
             chassis.ChassisOutput();
             transmission.TransmissionOutput();
+
             Console.WriteLine("\n");
         }
 
