@@ -13,22 +13,22 @@ namespace CarPark.Vehicles
         public string BrakesType
         { get; set; }
 
-        public Scooter(string model, string color, int maxSp, string brakesType, Engine eng, Transmission transm, Chassis chass)
+        public Scooter(string model, string color, int maxSpeed, string brakesType, Engine inputEngine, Transmission inputTransmission, Chassis inputChassis)
         {
             Model = model;
             Color = color;
-            maxSpeed = maxSp;
+            MaxSpeed = maxSpeed;
             BrakesType = brakesType;
-            engine = eng;
-            transmission = transm;
-            chassis = chass;
+            engine = inputEngine;
+            transmission = inputTransmission;
+            chassis = inputChassis;
         }
 
         public Scooter()
         {
             Model = "";
             Color = "";
-            maxSpeed = 0;
+            MaxSpeed = 0;
             BrakesType = "";
             engine = new Engine();
             transmission = new Transmission();
@@ -40,7 +40,7 @@ namespace CarPark.Vehicles
             Console.WriteLine($"{Model} Characteristics: ");
             Console.WriteLine($"Brakes Type: {BrakesType}");
             Console.WriteLine($"Color: {Color}");
-            Console.WriteLine($"Max Speed: {maxSpeed} km/h");
+            Console.WriteLine($"Max Speed: {MaxSpeed} km/h");
             Console.WriteLine($"Power: {Power} hp");
             Console.WriteLine($"Max Load: {MaxLoad} kg\n");
 
@@ -56,7 +56,7 @@ namespace CarPark.Vehicles
             XElement car = new XElement("Vehicle",
                 new XElement("Model", Model),
                 new XElement("Color", Color),
-                new XElement("maxSpeed", maxSpeed),
+                new XElement("maxSpeed", MaxSpeed),
                 new XElement("BrakesType", BrakesType),
                 engine.EngineXmlOutput(),
                 chassis.ChassisXmlOutput(),

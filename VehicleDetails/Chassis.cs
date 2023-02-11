@@ -13,9 +13,9 @@ namespace CarPark.VehicleDetails
         public int SerialNumber;
         public decimal Load;
 
-        public Chassis(int wheelsNum, int SN, decimal load)
+        public Chassis(int wheelsNumber, int SN, decimal load)
         {
-            WheelsNumber = wheelsNum;
+            WheelsNumber = wheelsNumber;
             SerialNumber = SN;
             Load = load;
         }

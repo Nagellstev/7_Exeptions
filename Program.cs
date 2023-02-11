@@ -16,7 +16,7 @@ namespace CarPark
 {
     public class Program
     {
-        static void Main()
+        public static void Main()
         {
             List<Vehicle> cars = new List<Vehicle>();
 
@@ -26,7 +26,15 @@ namespace CarPark
                 new Transmission("automatic", "ZF", 5),
                 new Chassis(4, 234, 2000)
                 );
-            cars.Add(passengerCar);
+
+            if (passengerCar.IsValid())
+            {
+                cars.Add(passengerCar);
+            }
+            else
+            {
+                Console.WriteLine("Bad news. Car is not valid!\n");
+            }
 
             Truck truck = new Truck(
                 "Truck", "White", 120, 6,
@@ -34,7 +42,15 @@ namespace CarPark
                 new Transmission("manual", "Bonfiglioli", 12),
                 new Chassis(6, 456, 12000)
                 );
-            cars.Add(truck);
+
+            if (truck.IsValid())
+            {
+                cars.Add(truck);
+            }
+            else
+            {
+                Console.WriteLine("Bad news. Car is not valid!\n");
+            }
 
             Bus bus = new Bus(
                 "Bus", "Grey", 140, 50,
@@ -42,15 +58,31 @@ namespace CarPark
                 new Transmission("manual", "Linda", 10),
                 new Chassis(4, 678, 8000)
                 );
-            cars.Add(bus);
 
-            Scooter scooter= new Scooter(
+            if (bus.IsValid())
+            {
+                cars.Add(bus);
+            }
+            else
+            {
+                Console.WriteLine("Bad news. Car is not valid!\n");
+            }
+
+            Scooter scooter = new Scooter(
                 "Scooter", "Red", 80, "Disk",
                 new Engine("Gas", 789, 10, 0.15m),
                 new Transmission("variator", "CF", 1),
                 new Chassis(2, 890, 200)
                 );
-            cars.Add(scooter);
+
+            if (scooter.IsValid())
+            {
+                cars.Add(scooter);
+            }
+            else
+            {
+                Console.WriteLine("Bad news. Car is not valid!\n");
+            }
 
             Console.WriteLine("Car Park\n");
             Console.WriteLine("\n");
@@ -64,21 +96,21 @@ namespace CarPark
             /// Write it to the file "\bin\Debug\net6.0\HighVolVehicles.xml"
             /// </summary>
             #region 
-            var subsetHighVolVehicles = from theCar in cars
+            var subsetHighVolumeVehicles = from theCar in cars
                                         where theCar.engine.Volume > 1.5m
                                         orderby theCar.engine.Volume
                                         select theCar;
 
-            List<XElement> highVolVehicles = new List<XElement>();
+            List<XElement> highVolumeVehicles = new List<XElement>();
 
-            foreach (Vehicle car in subsetHighVolVehicles)
+            foreach (Vehicle car in subsetHighVolumeVehicles)
             {
-                highVolVehicles.Add(car.PropertiesXmlOutput());
+                highVolumeVehicles.Add(car.PropertiesXmlOutput());
             }
 
-            XElement HVV = new XElement("Vehicles", highVolVehicles);
+            XElement xHighVolumeVehicles = new XElement("Vehicles", highVolumeVehicles);
 
-            XmlFileWriter(@"HighVolVehicles.xml", HVV);
+            XmlFileWriter(@"HighVolVehicles.xml", xHighVolumeVehicles);
 
             #endregion
 
@@ -101,12 +133,13 @@ namespace CarPark
                     new XElement("SerialNumber", car.engine.SerialNumber),
                     new XElement("Power", car.engine.Power)
                     );
+
                 trucksAndBuses.Add(vehicle);
             }
 
-            XElement TB = new XElement("TrucksAndBuses", trucksAndBuses);
+            XElement xTrucksAndBuses = new XElement("TrucksAndBuses", trucksAndBuses);
 
-            XmlFileWriter(@"TrucksAndBuses.xml", TB);
+            XmlFileWriter(@"TrucksAndBuses.xml", xTrucksAndBuses);
 
             #endregion
 
@@ -117,43 +150,45 @@ namespace CarPark
             #region
 
             //create list with transmission types without duplicates
-            List<string> transmTypes = new List<string>();
+            List<string> transmissionTypes = new List<string>();
+
             foreach (Vehicle car in cars)
             {
-                transmTypes.Add(car.transmission.Type);
+                transmissionTypes.Add(car.transmission.Type);
             }
-            transmTypes = transmTypes.Distinct().ToList();
+
+            transmissionTypes = transmissionTypes.Distinct().ToList();
             //
 
-            foreach (string trTy in transmTypes)
+            foreach (string transmissionType in transmissionTypes)
             {
-                var subsetTransmType = from theCar in cars
-                                       where theCar.transmission.Type == trTy
+                var subsetTransmissionType = from theCar in cars
+                                       where theCar.transmission.Type == transmissionType
                                        orderby theCar.engine.Volume
                                        select theCar;
 
-                List<XElement> trTyCars = new List<XElement>();
-                foreach (Vehicle car in subsetTransmType)
+                List<XElement> carsSortedByTransmissionType = new List<XElement>();
+
+                foreach (Vehicle car in subsetTransmissionType)
                 {
-                    trTyCars.Add(car.PropertiesXmlOutput());
+                    carsSortedByTransmissionType.Add(car.PropertiesXmlOutput());
                 }
 
-                XElement TTY = new XElement(trTy, trTyCars);
+                XElement xCarsSortedByTransmissionType = new XElement(transmissionType, carsSortedByTransmissionType);
 
-                XmlFileWriter(@"Transmission " + trTy + ".xml", TTY);
-
+                XmlFileWriter($"Transmission {transmissionType}.xml", xCarsSortedByTransmissionType);
             }
 
             #endregion
         }
-        public static void XmlFileWriter(string filename, XElement xe)
+        public static void XmlFileWriter(string fileName, XElement xElement)
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(filename, false)
+                using (StreamWriter writer = new StreamWriter(fileName, false)
                     )
                 {
-                    writer.WriteLine(xe);
+                    writer.WriteLine(xElement);
                     writer.Close();
                 }
             }

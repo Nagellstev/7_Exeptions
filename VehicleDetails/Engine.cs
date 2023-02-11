@@ -19,12 +19,12 @@ namespace CarPark.VehicleDetails
         { get; set; }
 
 
-        public Engine(string engType, int SN, decimal pow, decimal vol)
+        public Engine(string engineType, int SN, decimal power, decimal volume)
         {
-            EngineType = engType;
+            EngineType = engineType;
             SerialNumber = SN;
-            Power = pow;
-            Volume = vol;
+            Power = power;
+            Volume = volume;
         }
 
         public Engine()

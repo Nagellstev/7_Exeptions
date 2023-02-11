@@ -13,11 +13,11 @@ namespace CarPark.VehicleDetails
         public string Manufacturer;
         public int GearsNumber;
 
-        public Transmission(string type, string manuf, int gearsNum)
+        public Transmission(string type, string manufacturer, int gearsNumber)
         {
             Type = type;
-            Manufacturer = manuf;
-            GearsNumber = gearsNum;
+            Manufacturer = manufacturer;
+            GearsNumber = gearsNumber;
         }
 
         public Transmission()

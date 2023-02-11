@@ -13,22 +13,22 @@ namespace CarPark.Vehicles
         public int PassengerCaparcity
         { get; set; }
 
-        public Bus(string model, string color, int maxSp, int passengerCaparcity, Engine eng, Transmission transm, Chassis chass)
+        public Bus(string model, string color, int maxSpeed, int passengerCaparcity, Engine inputEngine, Transmission inputTransmission, Chassis inputChassis)
         {
             Model = model;
             Color = color;
-            maxSpeed = maxSp;
+            MaxSpeed = maxSpeed;
             PassengerCaparcity = passengerCaparcity;
-            engine = eng;
-            transmission = transm;
-            chassis = chass;
+            engine = inputEngine;
+            transmission = inputTransmission;
+            chassis = inputChassis;
         }
 
         public Bus()
         {
             Model = "";
             Color = "";
-            maxSpeed = 0;
+            MaxSpeed = 0;
             PassengerCaparcity = 0;
             engine = new Engine();
             transmission = new Transmission();
@@ -40,7 +40,7 @@ namespace CarPark.Vehicles
             Console.WriteLine($"{Model} Characteristics: ");
             Console.WriteLine($"Passenger Caparcity: {PassengerCaparcity}");
             Console.WriteLine($"Color: {Color}");
-            Console.WriteLine($"Max Speed: {maxSpeed} km/h");
+            Console.WriteLine($"Max Speed: {MaxSpeed} km/h");
             Console.WriteLine($"Power: {Power} hp");
             Console.WriteLine($"Max Load: {MaxLoad} kg\n");
 
@@ -56,7 +56,7 @@ namespace CarPark.Vehicles
             XElement car = new XElement("Vehicle",
                 new XElement("Model", Model),
                 new XElement("Color", Color),
-                new XElement("maxSpeed", maxSpeed),
+                new XElement("maxSpeed", MaxSpeed),
                 new XElement("PassengerCaparcity", PassengerCaparcity),
                 engine.EngineXmlOutput(),
                 chassis.ChassisXmlOutput(),
