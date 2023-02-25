@@ -11,58 +11,117 @@ namespace CarPark.Vehicles
     internal class Bus : Vehicle
     {
         public int PassengerCaparcity
-        { get; set; }
+        {
+            get
+            {
+                return passengerCaparcity;
+            }
+            set
+            {
+                if (value < 1)
+                {
+                    Console.WriteLine($"{GetType().Name}: Passenger Caparcity must be >= 1");
+                    thisPropertiesIsValid = false;
+                }
+                else
+                {
+                    passengerCaparcity = value;
+                }
+            }
+        }
 
-        public Bus(string model, string color, int maxSpeed, int passengerCaparcity, Engine inputEngine, Transmission inputTransmission, Chassis inputChassis)
+        private int passengerCaparcity;
+        private bool thisPropertiesIsValid = true;
+
+        public Bus(string model, string color, int maxSpeed, int number, int passengerCaparcity, Engine engine, Transmission transmission, Chassis chassis)
         {
             Model = model;
             Color = color;
             MaxSpeed = maxSpeed;
+            Number = number;
             PassengerCaparcity = passengerCaparcity;
-            engine = inputEngine;
-            transmission = inputTransmission;
-            chassis = inputChassis;
+            this.engine = engine;
+            this.transmission = transmission;
+            this.chassis = chassis;
         }
 
         public Bus()
         {
-            Model = "";
-            Color = "";
-            MaxSpeed = 0;
-            PassengerCaparcity = 0;
+            Model = "default";
+            Color = "default";
+            MaxSpeed = 1;
+            Number = 1;
+            PassengerCaparcity = 1;
             engine = new Engine();
             transmission = new Transmission();
             chassis = new Chassis();
         }
 
-        public override void PropertiesOutput()
+        public void PropertiesOutput()
         {
-            Console.WriteLine($"{Model} Characteristics: ");
-            Console.WriteLine($"Passenger Caparcity: {PassengerCaparcity}");
-            Console.WriteLine($"Color: {Color}");
-            Console.WriteLine($"Max Speed: {MaxSpeed} km/h");
-            Console.WriteLine($"Power: {Power} hp");
-            Console.WriteLine($"Max Load: {MaxLoad} kg\n");
+            if (IsValid())
+            {
+                Console.WriteLine($"{Model} Characteristics: ");
+                Console.WriteLine($"Vehicle Type: {GetType().Name}");
+                Console.WriteLine($"Passenger Caparcity: {PassengerCaparcity}");
+                Console.WriteLine($"Color: {Color}");
+                Console.WriteLine($"Max Speed: {MaxSpeed} km/h");
+                Console.WriteLine($"Number: {Number} km/h");
+                Console.WriteLine($"Power: {Power} hp");
+                Console.WriteLine($"Max Load: {MaxLoad} kg\n");
 
-            engine.EngineOutput();
-            chassis.ChassisOutput();
-            transmission.TransmissionOutput();
+                engine.EngineOutput();
+                chassis.ChassisOutput();
+                transmission.TransmissionOutput();
 
-            Console.WriteLine("\n");
+                Console.WriteLine("\n");
+            }
+            else
+            {
+                Console.WriteLine($"Something went wrong. {GetType().Name} is not valid");
+                Console.WriteLine("\n");
+            }
         }
 
-        public override XElement PropertiesXmlOutput()
+        public XElement PropertiesXmlOutput()
         {
-            XElement car = new XElement("Vehicle",
-                new XElement("Model", Model),
-                new XElement("Color", Color),
-                new XElement("maxSpeed", MaxSpeed),
-                new XElement("PassengerCaparcity", PassengerCaparcity),
-                engine.EngineXmlOutput(),
-                chassis.ChassisXmlOutput(),
-                transmission.TransmissionXmlOutput()
+            if (IsValid())
+            {
+                XElement car = new XElement("Vehicle",
+                    new XElement("VehicleType", GetType().Name),
+                    new XElement("Model", Model),
+                    new XElement("Color", Color),
+                    new XElement("maxSpeed", MaxSpeed),
+                    new XElement("Number", Number),
+                    new XElement("PassengerCaparcity", PassengerCaparcity),
+                    engine.EngineXmlOutput(),
+                    chassis.ChassisXmlOutput(),
+                    transmission.TransmissionXmlOutput()
+                    );
+
+                return car;
+            }
+            else
+            {
+                XElement car = new XElement("Vehicle",
+                new XElement("VehicleType", $"{GetType().Name}NotValid")
                 );
-            return car;
+
+                return car;
+            }
+        }
+
+        public override bool IsValid()
+        {
+            if (base.IsValid() != true ||
+                thisPropertiesIsValid != true)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

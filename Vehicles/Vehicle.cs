@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,14 +10,85 @@ using CarPark.VehicleDetails;
 
 namespace CarPark.Vehicles
 {
-    public class Vehicle
+    class Vehicle
     {
         public string Model
-        { get; set; }
+        {
+            get
+            {
+                return model;
+            }
+            set
+            {
+                if (value == "")
+                {
+                    Console.WriteLine($"{GetType().Name}: Please, fill model");
+                    propertiesIsValid = false;
+                }
+                else
+                {
+                    model = value;
+                }
+            }
+        }
         public string Color
-        { get; set; }
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                if (value == "")
+                {
+                    Console.WriteLine($"{GetType().Name}: Please, fill color");
+                    propertiesIsValid = false;
+                }
+                else
+                {
+                    color = value;
+                }
+            }
+        }
         public int MaxSpeed
-        { get; set; }
+        {
+            get
+            {
+                return maxSpeed;
+            }
+            set
+            {
+                if (value < 1)
+                {
+                    Console.WriteLine($"{GetType().Name}: Speed must be >= 1");
+                    propertiesIsValid = false;
+                }
+                else
+                {
+                    maxSpeed = value;
+                }
+            }
+        }
+        public int Number
+        {
+            get
+            {
+                return number;
+            }
+            set
+            {
+                if (value < 1
+                    || value > 999)
+                {
+                    Console.WriteLine($"{GetType().Name}: Number must be >= 1 and <= 999");
+                    propertiesIsValid = false;
+                }
+                else
+                {
+                    number = value;
+                }
+            }
+        }
         public decimal Power
         {
             get
@@ -36,61 +108,97 @@ namespace CarPark.Vehicles
         public Transmission transmission = new Transmission();
         public Chassis chassis = new Chassis();
 
-        public virtual void PropertiesOutput()
+        private string model = "default";
+        private string color = "default";
+        private int maxSpeed = 1;
+        private int number = 1;
+        private bool propertiesIsValid = true;
+
+        public Vehicle() 
         {
-            Console.WriteLine($"{Model} Characteristics: ");
-            Console.WriteLine($"Color: {Color}");
-            Console.WriteLine($"Max Speed: {MaxSpeed} km/h");
-            Console.WriteLine($"Power: {Power} hp");
-            Console.WriteLine($"Max Load: {MaxLoad} kg\n");
-
-            engine.EngineOutput();
-            chassis.ChassisOutput();
-            transmission.TransmissionOutput();
-
-            Console.WriteLine("\n");
+            Model = model;
+            Color = color;
+            MaxSpeed = maxSpeed;
+            Number = number;
+            engine = new Engine();
+            transmission = new Transmission();
+            chassis = new Chassis();
         }
 
-        public virtual XElement PropertiesXmlOutput()
+        public Vehicle(string model, string color, int maxSpeed, int number, Engine engine, Transmission transmission, Chassis chassis)
         {
-            XElement car = new XElement("Vehicle",
+            Model = model;
+            Color = color;
+            MaxSpeed = maxSpeed;
+            Number = number;
+            this.engine = engine;
+            this.transmission = transmission;
+            this.chassis = chassis;
+        }
+        public virtual bool IsValid()
+        {
+            if (chassis.IsValid != true ||
+                engine.IsValid != true ||
+                transmission.IsValid != true ||
+                propertiesIsValid != true)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void PropertiesOutput()
+        {
+            if (IsValid())
+            {
+                Console.WriteLine($"{Model} Characteristics: ");
+                Console.WriteLine($"Vehicle Type: {GetType().Name}");
+                Console.WriteLine($"\tColor: {Color}");
+                Console.WriteLine($"\tMax Speed: {MaxSpeed} km/h");
+                Console.WriteLine($"\tNumber: {Number}");
+                Console.WriteLine($"\tPower: {Power} hp");
+                Console.WriteLine($"\tMax Load: {MaxLoad} kg\n");
+
+                engine.EngineOutput();
+                chassis.ChassisOutput();
+                transmission.TransmissionOutput();
+
+                Console.WriteLine("\n");
+            }
+            else
+            {
+                Console.WriteLine($"Something went wrong. {GetType().Name} is not valid");
+                Console.WriteLine("\n");
+            }
+        }
+
+        public XElement PropertiesXmlOutput()
+        {
+            if (IsValid())
+            {
+                XElement car = new XElement("Vehicle",
+                new XElement("VehicleType", GetType().Name),
                 new XElement("Model", Model),
                 new XElement("Color", Color),
                 new XElement("maxSpeed", MaxSpeed),
+                new XElement("Number", Number),
                 engine.EngineXmlOutput(),
                 chassis.ChassisXmlOutput(),
                 transmission.TransmissionXmlOutput()
                 );
-            return car;
-        }
 
-        public virtual bool IsValid()
-        {
-            if (
-                !string.IsNullOrEmpty(Model) &&
-                !string.IsNullOrEmpty(Color) &&
-                MaxSpeed > 0 &&
-                Power > 0 &&
-
-                !string.IsNullOrEmpty(engine.EngineType) &&
-                engine.SerialNumber > 0 &&
-                engine.Volume > 0 &&
-                engine.Power > 0 &&
-
-                chassis.WheelsNumber > 0 &&
-                chassis.Load > 0 &&
-                chassis.SerialNumber > 0 &&
-
-                !string.IsNullOrEmpty(transmission.Manufacturer) &&
-                transmission.GearsNumber > 0 &&
-                !string.IsNullOrEmpty(transmission.Type)
-                )
-            {
-                return true;
+                return car;
             }
             else
             {
-                return false;
+                XElement car = new XElement("Vehicle",
+                new XElement("VehicleType", $"{GetType().Name}NotValid")
+                );
+
+                return car;
             }
         }
     }

@@ -21,7 +21,7 @@ namespace CarPark
             List<Vehicle> cars = new List<Vehicle>();
 
             PassengerCar passengerCar = new PassengerCar(
-                "Passenger Car", "Blue", 200, "Sedan", 
+                "Passenger Car", "Blue", 200, 10, "Sedan", 
                 new Engine("Gas", 123, 180, 2.4m),
                 new Transmission("automatic", "ZF", 5),
                 new Chassis(4, 234, 2000)
@@ -37,7 +37,7 @@ namespace CarPark
             }
 
             Truck truck = new Truck(
-                "Truck", "White", 120, 6,
+                "Truck", "White", 120, 11, 6,
                 new Engine("Diesel", 345, 220, 6.4m),
                 new Transmission("manual", "Bonfiglioli", 12),
                 new Chassis(6, 456, 12000)
@@ -53,7 +53,7 @@ namespace CarPark
             }
 
             Bus bus = new Bus(
-                "Bus", "Grey", 140, 50,
+                "Bus", "Grey", 140, 12, 50,
                 new Engine("Diesel", 567, 210, 5.4m),
                 new Transmission("manual", "Linda", 10),
                 new Chassis(4, 678, 8000)
@@ -69,7 +69,7 @@ namespace CarPark
             }
 
             Scooter scooter = new Scooter(
-                "Scooter", "Red", 80, "Disk",
+                "Scooter", "Red", 80, 13, "Disk",
                 new Engine("Gas", 789, 10, 0.15m),
                 new Transmission("variator", "CF", 1),
                 new Chassis(2, 890, 200)
@@ -85,11 +85,33 @@ namespace CarPark
             }
 
             Console.WriteLine("Car Park\n");
-            Console.WriteLine("\n");
 
             foreach (Vehicle car in cars)
             {
-                car.PropertiesOutput();
+                if (car is PassengerCar)
+                {
+                    PassengerCar car1 = (PassengerCar)car;
+                    car1.PropertiesOutput();
+                }
+                else if (car is Bus)
+                {
+                    Bus car1 = (Bus)car;
+                    car1.PropertiesOutput();
+                }
+                else if (car is Truck)
+                {
+                    Truck car1 = (Truck)car;
+                    car1.PropertiesOutput();
+                }
+                else if (car is Scooter)
+                {
+                    Scooter car1 = (Scooter)car;
+                    car1.PropertiesOutput();
+                }
+                else
+                {
+                    Console.WriteLine("No such car!\n");
+                }
             }
             /// <summary>
             /// build XElement with cars with engine volume > 1.5l. 
@@ -103,9 +125,33 @@ namespace CarPark
 
             List<XElement> highVolumeVehicles = new List<XElement>();
 
-            foreach (Vehicle car in subsetHighVolumeVehicles)
+            foreach (var car in subsetHighVolumeVehicles)
             {
-                highVolumeVehicles.Add(car.PropertiesXmlOutput());
+                if (car is PassengerCar)
+                {
+                    PassengerCar car1 = (PassengerCar)car;
+                    highVolumeVehicles.Add(car1.PropertiesXmlOutput());
+                }
+                else if (car is Bus)
+                {
+                    Bus car1 = (Bus)car;
+                    highVolumeVehicles.Add(car1.PropertiesXmlOutput());
+                }
+                else if (car is Truck)
+                {
+                    Truck car1 = (Truck)car;
+                    highVolumeVehicles.Add(car1.PropertiesXmlOutput());
+                }
+                else if (car is Scooter)
+                {
+                    Scooter car1 = (Scooter)car;
+                    highVolumeVehicles.Add(car1.PropertiesXmlOutput());
+                }
+                else
+                {
+                    Console.WriteLine("No such car!\n");
+                }
+                //highVolumeVehicles.Add(car.PropertiesXmlOutput());
             }
 
             XElement xHighVolumeVehicles = new XElement("Vehicles", highVolumeVehicles);
@@ -126,7 +172,7 @@ namespace CarPark
 
             List<XElement> trucksAndBuses = new List<XElement>();
 
-            foreach (Vehicle car in subsetTrucksAndBuses)
+            foreach (var car in subsetTrucksAndBuses)
             {
                 XElement vehicle = new XElement(car.Model,
                     new XElement("EngineType", car.engine.EngineType),
@@ -152,7 +198,7 @@ namespace CarPark
             //create list with transmission types without duplicates
             List<string> transmissionTypes = new List<string>();
 
-            foreach (Vehicle car in cars)
+            foreach (var car in cars)
             {
                 transmissionTypes.Add(car.transmission.Type);
             }
@@ -169,9 +215,33 @@ namespace CarPark
 
                 List<XElement> carsSortedByTransmissionType = new List<XElement>();
 
-                foreach (Vehicle car in subsetTransmissionType)
+                foreach (var car in subsetTransmissionType)
                 {
-                    carsSortedByTransmissionType.Add(car.PropertiesXmlOutput());
+                    if (car is PassengerCar)
+                    {
+                        PassengerCar car1 = (PassengerCar)car;
+                        carsSortedByTransmissionType.Add(car1.PropertiesXmlOutput());
+                    }
+                    else if (car is Bus)
+                    {
+                        Bus car1 = (Bus)car;
+                        carsSortedByTransmissionType.Add(car1.PropertiesXmlOutput());
+                    }
+                    else if (car is Truck)
+                    {
+                        Truck car1 = (Truck)car;
+                        carsSortedByTransmissionType.Add(car1.PropertiesXmlOutput());
+                    }
+                    else if (car is Scooter)
+                    {
+                        Scooter car1 = (Scooter)car;
+                        carsSortedByTransmissionType.Add(car1.PropertiesXmlOutput());
+                    }
+                    else
+                    {
+                        Console.WriteLine("No such car!\n");
+                    }
+                    //carsSortedByTransmissionType.Add(car.PropertiesXmlOutput());
                 }
 
                 XElement xCarsSortedByTransmissionType = new XElement(transmissionType, carsSortedByTransmissionType);
