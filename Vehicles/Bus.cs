@@ -66,7 +66,7 @@ namespace CarPark.Vehicles
                 Console.WriteLine($"Passenger Caparcity: {PassengerCaparcity}");
                 Console.WriteLine($"Color: {Color}");
                 Console.WriteLine($"Max Speed: {MaxSpeed} km/h");
-                Console.WriteLine($"Number: {Number} km/h");
+                Console.WriteLine($"Number: {Number}");
                 Console.WriteLine($"Power: {Power} hp");
                 Console.WriteLine($"Max Load: {MaxLoad} kg\n");
 

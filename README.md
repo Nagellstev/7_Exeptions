@@ -10,8 +10,3 @@ Using the object model from the Collections tasks, extend the functionality by a
  E.g. an attempt to replace the car with a non-existent identifier (ID).
  - RemoveAutoException - an exception if it is impossible to remove a car. 
  E.g. an attempt to delete the car with a non-existent identifier (ID).
-
-
- NOTES for improvement
- Need to make check if there is a car with the same number as a car in list.
- InitializationExeption. Did not get how car initializes.

@@ -36,7 +36,7 @@ namespace CarPark
                 Console.WriteLine("\tl - load cars from XML file");
                 Console.WriteLine("\td - delete car");
                 Console.WriteLine("\tr - replace car");
-                Console.WriteLine("\tg - get cars by parameter");
+                //Console.WriteLine("\tg - get cars by parameter");
                 Console.WriteLine("\tu - get cars by user parameter");
                 Console.WriteLine("\tp - print all cars in list");
                 //Console.WriteLine("\to - print car by number");
@@ -66,7 +66,17 @@ namespace CarPark
 
                     case "l":
                         Console.WriteLine("Input name of file to load:");
-                        cars = ProcessingCarPark.LoadCars(Console.ReadLine());
+
+                        try
+                        {
+                            cars = ProcessingCarPark.LoadCars(Console.ReadLine());
+                        }
+                        catch (FileNotFoundException exception)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(exception.Message);
+                            Console.ResetColor();
+                        }
 
                         break;
 
@@ -81,6 +91,12 @@ namespace CarPark
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine(exeption.Message + " Can't remove the car.");
+                            Console.ResetColor();
+                        }
+                        catch (Exception exception)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(exception.Message);
                             Console.ResetColor();
                         }
 
@@ -111,7 +127,7 @@ namespace CarPark
                         break;
 
                     case "p":
-                        Console.WriteLine("Here's all cars in list:");
+                        Console.WriteLine("Here's all cars in list:\n");
 
                         foreach (Vehicle car in cars)
                         {
@@ -120,11 +136,11 @@ namespace CarPark
 
                         break;
 
-                    case "g":
-                        Console.WriteLine("Input parameters to select cars:");
-                        cars = ProcessingCarPark.GetAutoByParameters(cars);
+                    //case "g":
+                    //    Console.WriteLine("Input parameters to select cars:");
+                    //    cars = ProcessingCarPark.GetAutoByParameters(cars);
 
-                        break;
+                    //    break;
 
                     case "u":
                         try

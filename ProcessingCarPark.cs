@@ -44,6 +44,7 @@ namespace CarPark
 
             Console.WriteLine("\tInput Model:");
             model = Console.ReadLine();
+
             Console.WriteLine("\tNumber:");
 
             if (int.TryParse(Console.ReadLine(), out number) != true)
@@ -53,6 +54,7 @@ namespace CarPark
 
             Console.WriteLine("\tColor:");
             color = Console.ReadLine();
+
             Console.WriteLine("\tInput Max Speed:");
 
             if (int.TryParse(Console.ReadLine(), out maxSpeed) != true)
@@ -71,7 +73,7 @@ namespace CarPark
                     }
 
                     return new Truck(
-                        model, color, number, maxSpeed, truckBodyVolume,
+                        model, color, maxSpeed, number, truckBodyVolume,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
@@ -87,8 +89,8 @@ namespace CarPark
                         throw new AddExeption("Max Speed is incorrect.");
                     }
 
-                    return new Truck(
-                        model, color, number, maxSpeed, passengerCaparsity,
+                    return new Bus(
+                        model, color, maxSpeed, number, passengerCaparsity,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
@@ -101,7 +103,7 @@ namespace CarPark
                     brakesType = Console.ReadLine();
 
                     return new Scooter(
-                        model, color, number, maxSpeed, brakesType,
+                        model, color, maxSpeed, number, brakesType,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
@@ -113,8 +115,8 @@ namespace CarPark
                     Console.WriteLine("\tInput body type:");
                     bodyType = Console.ReadLine();
 
-                    return new Scooter(
-                        model, color, number, maxSpeed, bodyType,
+                    return new PassengerCar(
+                        model, color, maxSpeed, number, bodyType,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
@@ -123,6 +125,8 @@ namespace CarPark
                     break;
 
                 default:
+                    throw new InitializationException($"Initialization Exeption. No such car type.");
+
                     break;
             }
 
@@ -217,92 +221,66 @@ namespace CarPark
 
         public static void CarPropertiesOutput(Vehicle car)
         {
-            Console.WriteLine(car.Model + " Characteristics: ");
-            Console.WriteLine("\tNumber: " + car.Number);
-            Console.WriteLine("\tColor: " + car.Color);
-            Console.WriteLine("\tMax Speed: " + car.MaxSpeed + "km/h");
-            Console.WriteLine("\tPower: " + car.Power + "hp");
-            Console.WriteLine("\tMax Load: " + car.MaxLoad + "kg\n");
-
-            EngineOutput(car.engine);
-            ChassisOutput(car.chassis);
-            TransmissionOutput(car.transmission);
+            if (car is PassengerCar)
+            {
+                PassengerCar car1 = (PassengerCar)car;
+                car1.PropertiesOutput();
+            }
+            else if (car is Bus)
+            {
+                Bus car1 = (Bus)car;
+                car1.PropertiesOutput();
+            }
+            else if (car is Truck)
+            {
+                Truck car1 = (Truck)car;
+                car1.PropertiesOutput();
+            }
+            else if (car is Scooter)
+            {
+                Scooter car1 = (Scooter)car;
+                car1.PropertiesOutput();
+            }
+            else
+            {
+                Console.WriteLine("No such car!\n");
+            }
 
             Console.WriteLine("\n");
         }
 
-        private static void EngineOutput(Engine engine)
-        {
-            Console.WriteLine("  Engine Characteristics: ");
-            Console.WriteLine("\tType: " + engine.EngineType);
-            Console.WriteLine("\tSerial Number: " + engine.SerialNumber);
-            Console.WriteLine("\tPower: " + engine.Power + "hp");
-            Console.WriteLine("\tVolume: " + engine.Volume + "l\n");
-        }
-
-        private static void ChassisOutput(Chassis chassis)
-        {
-            Console.WriteLine("  Chassis Characteristics: ");
-            Console.WriteLine("\tWheels Number: " + chassis.WheelsNumber);
-            Console.WriteLine("\tSerial Number: " + chassis.SerialNumber);
-            Console.WriteLine("\tLoad: " + chassis.Load + "kg\n");
-        }
-
-        private static void TransmissionOutput(Transmission transmission)
-        {
-            Console.WriteLine("  Transmission Characteristics: ");
-            Console.WriteLine("\tType: " + transmission.Type);
-            Console.WriteLine("\tManufacturer: " + transmission.Manufacturer);
-            Console.WriteLine("\tGearsNumber: " + transmission.GearsNumber + "\n");
-        }
-
         public static XElement CarXmlOutput(Vehicle car)
         {
-            XElement Xcar = new XElement("Vehicle",
-                new XElement("Model", car.Model),
-                new XElement("Number", car.Number),
-                new XElement("Color", car.Color),
-                new XElement("maxSpeed", car.MaxSpeed),
-                EngineXmlOutput(car.engine),
-                ChassisXmlOutput(car.chassis),
-                TransmissionXmlOutput(car.transmission)
-                );
+            XElement Xcar;
+
+            if (car is PassengerCar)
+            {
+                PassengerCar car1 = (PassengerCar)car;
+                Xcar = car1.PropertiesXmlOutput();
+            }
+            else if (car is Bus)
+            {
+                Bus car1 = (Bus)car;
+                Xcar = car1.PropertiesXmlOutput();
+            }
+            else if (car is Truck)
+            {
+                Truck car1 = (Truck)car;
+                Xcar = car1.PropertiesXmlOutput();
+            }
+            else if (car is Scooter)
+            {
+                Scooter car1 = (Scooter)car;
+                Xcar = car1.PropertiesXmlOutput();
+            }
+            else
+            {
+                Xcar = new XElement("Vehicle",
+                    new XElement("Model", "NoSuchModel")
+                    );
+            }
 
             return Xcar;
-        }
-
-        private static XElement EngineXmlOutput(Engine engine)
-        {
-            XElement Xengine = new XElement("Engine",
-                new XElement("EngineType", engine.EngineType),
-                new XElement("SerialNumber", engine.SerialNumber.ToString()),
-                new XElement("Power", engine.Power.ToString()),
-                new XElement("Volume", engine.Volume.ToString())
-                );
-
-            return Xengine;
-        }
-
-        private static XElement ChassisXmlOutput(Chassis chassis)
-        {
-            XElement Xchassis = new XElement("Chassis",
-                new XElement("WheelsNumber", chassis.WheelsNumber.ToString()),
-                new XElement("SerialNumber", chassis.SerialNumber.ToString()),
-                new XElement("Load", chassis.Load.ToString())
-                );
-
-            return Xchassis;
-        }
-
-        private static XElement TransmissionXmlOutput(Transmission transmission)
-        {
-            XElement Xtransmission = new XElement("Transmission",
-                new XElement("Type", transmission.Type),
-                new XElement("Manufacturer", transmission.Manufacturer),
-                new XElement("GearsNumber", transmission.GearsNumber.ToString())
-                );
-
-            return Xtransmission;
         }
 
         public static void SaveCars(string filename, List<Vehicle> cars)
@@ -333,83 +311,94 @@ namespace CarPark
                 int wheelsNum = 0;
                 int chassisSN = 0;
                 decimal load = 0;
+                int passengerCaparsity = 0;
+                int truckBodyVolume = 0;
+                string brakesType = "";
+                string bodyType = "";
 
-                string model = xElement.Element("Model").Value;
-                int number = Convert.ToInt32(xElement.Element("Number").Value);
-                string color = xElement.Element("Color").Value;
-                int maxSpeed = Convert.ToInt32(xElement.Element("maxSpeed").Value);
-                string carType = xElement.Element("VehicleType").Value;
-                int passengerCaparsity = Convert.ToInt32(xElement.Element("PassengerCaparsity").Value);
-                int truckBodyVolume = Convert.ToInt32(xElement.Element("TruckBodyVolume").Value);
-                string bodyType = xElement.Element("BodyType").Value;
-                string brakesType = xElement.Element("BrakesType").Value;
-
-                foreach (XElement xElementL2 in xElement.Elements("Engine"))
+                try
                 {
-                    engineType = xElementL2.Element("EngineType").Value;
-                    engineSN = Convert.ToInt32(xElementL2.Element("SerialNumber").Value);
-                    power = Convert.ToDecimal(xElementL2.Element("Power").Value);
-                    volume = Convert.ToDecimal(xElementL2.Element("Volume").Value);
+                    string carType = xElement.Element("VehicleType").Value;
+                    string model = xElement.Element("Model").Value;
+                    int number = Convert.ToInt32(xElement.Element("Number").Value);
+                    string color = xElement.Element("Color").Value;
+                    int maxSpeed = Convert.ToInt32(xElement.Element("maxSpeed").Value);
+
+                    foreach (XElement xElementL2 in xElement.Elements("Engine"))
+                    {
+                        engineType = xElementL2.Element("EngineType").Value;
+                        engineSN = Convert.ToInt32(xElementL2.Element("SerialNumber").Value);
+                        power = Convert.ToDecimal(xElementL2.Element("Power").Value);
+                        volume = Convert.ToDecimal(xElementL2.Element("Volume").Value);
+                    }
+
+                    foreach (XElement xElementL2 in xElement.Elements("Transmission"))
+                    {
+                        transmType = xElementL2.Element("Type").Value;
+                        transmManuf = xElementL2.Element("Manufacturer").Value;
+                        gearsNum = Convert.ToInt32(xElementL2.Element("GearsNumber").Value);
+                    }
+
+                    foreach (XElement xElementL2 in xElement.Elements("Chassis"))
+                    {
+                        wheelsNum = Convert.ToInt32(xElementL2.Element("WheelsNumber").Value);
+                        chassisSN = Convert.ToInt32(xElementL2.Element("SerialNumber").Value);
+                        load = Convert.ToDecimal(xElementL2.Element("Load").Value);
+                    }
+
+                    switch (carType)
+                    {
+                        case "Bus":
+                            passengerCaparsity = Convert.ToInt32(xElement.Element("PassengerCaparcity").Value);
+                            cars.Add(new Bus(
+                                model, color, maxSpeed, number, passengerCaparsity,
+                                new Engine(engineType, engineSN, power, volume),
+                                new Transmission(transmType, transmManuf, gearsNum),
+                                new Chassis(wheelsNum, chassisSN, load)
+                                ));
+
+                            break;
+
+                        case "Truck":
+                            truckBodyVolume = Convert.ToInt32(xElement.Element("TruckBodyVolume").Value);
+                            cars.Add(new Truck(
+                                model, color, maxSpeed, number, truckBodyVolume,
+                                new Engine(engineType, engineSN, power, volume),
+                                new Transmission(transmType, transmManuf, gearsNum),
+                                new Chassis(wheelsNum, chassisSN, load)
+                                ));
+
+                            break;
+
+                        case "Scooter":
+                            brakesType = xElement.Element("BrakesType").Value;
+                            cars.Add(new Scooter(
+                                model, color, maxSpeed, number, brakesType,
+                                new Engine(engineType, engineSN, power, volume),
+                                new Transmission(transmType, transmManuf, gearsNum),
+                                new Chassis(wheelsNum, chassisSN, load)
+                                ));
+
+                            break;
+
+                        case "PassengerCar":
+                            bodyType = xElement.Element("BodyType").Value;
+                            cars.Add(new PassengerCar(
+                                model, color, maxSpeed, number, bodyType,
+                                new Engine(engineType, engineSN, power, volume),
+                                new Transmission(transmType, transmManuf, gearsNum),
+                                new Chassis(wheelsNum, chassisSN, load)
+                                ));
+
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
-
-                foreach (XElement xElementL2 in xElement.Elements("Transmission"))
+                catch (Exception exeption)
                 {
-                    transmType = xElementL2.Element("Type").Value;
-                    transmManuf = xElementL2.Element("Manufacturer").Value;
-                    gearsNum = Convert.ToInt32(xElementL2.Element("GearsNumber").Value);
-                }
-
-                foreach (XElement xElementL2 in xElement.Elements("Chassis"))
-                {
-                    wheelsNum = Convert.ToInt32(xElementL2.Element("WheelsNumber").Value);
-                    chassisSN = Convert.ToInt32(xElementL2.Element("SerialNumber").Value);
-                    load = Convert.ToDecimal(xElementL2.Element("Load").Value);
-                }
-
-                switch (carType)
-                {
-                    case "Bus":
-                        cars.Add(new Bus(
-                            model, color, maxSpeed, number, passengerCaparsity,
-                            new Engine(engineType, engineSN, power, volume),
-                            new Transmission(transmType, transmManuf, gearsNum),
-                            new Chassis(wheelsNum, chassisSN, load)
-                            ));
-
-                        break;
-
-                    case "Truck":
-                        cars.Add(new Truck(
-                            model, color, maxSpeed, number, truckBodyVolume,
-                            new Engine(engineType, engineSN, power, volume),
-                            new Transmission(transmType, transmManuf, gearsNum),
-                            new Chassis(wheelsNum, chassisSN, load)
-                            ));
-
-                        break;
-
-                    case "Scooter":
-                        cars.Add(new Scooter(
-                            model, color, maxSpeed, number, brakesType,
-                            new Engine(engineType, engineSN, power, volume),
-                            new Transmission(transmType, transmManuf, gearsNum),
-                            new Chassis(wheelsNum, chassisSN, load)
-                            ));
-
-                        break;
-
-                    case "PassengerCar":
-                        cars.Add(new Scooter(
-                            model, color, maxSpeed, number, bodyType,
-                            new Engine(engineType, engineSN, power, volume),
-                            new Transmission(transmType, transmManuf, gearsNum),
-                            new Chassis(wheelsNum, chassisSN, load)
-                            ));
-
-                        break;
-
-                    default:
-                        break;
+                    Console.WriteLine($"Some car was not loaded. Error: {exeption.Message}");
                 }
             }
             return cars;
@@ -435,14 +424,6 @@ namespace CarPark
 
         public static void ReplaceCar(List<Vehicle> cars, int carNumber)
         {
-            string model;
-            string color;
-            int maxSpeed;
-            int passengerCaparsity;
-            int truckBodyVolume;
-            string brakesType;
-            string bodyType;
-
             var carToDelete = from theCar in cars
                               where theCar.Number == carNumber
                               orderby theCar.Number
@@ -453,86 +434,117 @@ namespace CarPark
                 throw new UpdateAutoException("No cars with such number.");
             }
 
-            string carType = carToDelete.GetType().Name;
+            string model;
+            int carType;
+            int passengerCaparsity;
+            int truckBodyVolume;
+            string bodyType;
+            string brakesType;
+            string color;
+            int maxSpeed;
+            Vehicle replacementCar;
 
             Console.WriteLine("Input New Car:");
+            Console.WriteLine("Input Car type:");
+            Console.WriteLine("\t1 - Truck");
+            Console.WriteLine("\t2 - Bus");
+            Console.WriteLine("\t3 - Scooter");
+            Console.WriteLine("\t4 - Passenger Car");
+
+            if (int.TryParse(Console.ReadLine(), out carType) != true ||
+                carType < 1 ||
+                carType > 5)
+            {
+                throw new AddExeption("Car type is incorrect.");
+            }
+
             Console.WriteLine("\tInput Model:");
             model = Console.ReadLine();
+
             Console.WriteLine("\tColor:");
             color = Console.ReadLine();
+
             Console.WriteLine("\tInput Max Speed:");
 
-            if (!int.TryParse(Console.ReadLine(), out maxSpeed))
+            if (int.TryParse(Console.ReadLine(), out maxSpeed) != true)
             {
-                throw new UpdateAutoException("Number is incorrect.");
+                throw new AddExeption("Max Speed is incorrect.");
             }
 
             switch (carType)
             {
-                case "Bus":
-                    Console.WriteLine("\tInput Passenger caparsity:");
+                case 1:
+                    Console.WriteLine("\tInput truck body volume:");
 
-                    if (!int.TryParse(Console.ReadLine(), out passengerCaparsity))
+                    if (int.TryParse(Console.ReadLine(), out truckBodyVolume) != true)
                     {
-                        throw new UpdateAutoException("Number is incorrect.");
+                        throw new AddExeption("Max Speed is incorrect.");
                     }
 
-                    cars.Add(new Bus(
-                        model, color, maxSpeed, carNumber, passengerCaparsity,
-                        InputNewEngine(),
-                        InputNewTransmission(),
-                        InputNewChassis()
-                        ));
-
-                    break;
-
-                case "Truck":
-                    Console.WriteLine("\tInput truck Body Volume:");
-
-                    if (!int.TryParse(Console.ReadLine(), out truckBodyVolume))
-                    {
-                        throw new UpdateAutoException("Number is incorrect.");
-                    }
-
-                    cars.Add(new Truck(
+                    replacementCar = new Truck(
                         model, color, maxSpeed, carNumber, truckBodyVolume,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
-                        ));
+                        );
 
                     break;
 
-                case "Scooter":
+                case 2:
+                    Console.WriteLine("\tInput passenger caparsity:");
+
+                    if (int.TryParse(Console.ReadLine(), out passengerCaparsity) != true)
+                    {
+                        throw new AddExeption("Max Speed is incorrect.");
+                    }
+
+                    replacementCar = new Bus(
+                        model, color, maxSpeed, carNumber, passengerCaparsity,
+                        InputNewEngine(),
+                        InputNewTransmission(),
+                        InputNewChassis()
+                        );
+
+                    break;
+
+                case 3:
                     Console.WriteLine("\tInput brakes type:");
                     brakesType = Console.ReadLine();
 
-                    cars.Add(new Scooter(
+                    replacementCar = new Scooter(
                         model, color, maxSpeed, carNumber, brakesType,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
-                        ));
+                        );
 
                     break;
 
-                case "PassengerCar":
-                    Console.WriteLine("\tInput brakes type:");
+                case 4:
+                    Console.WriteLine("\tInput body type:");
                     bodyType = Console.ReadLine();
 
-                    cars.Add(new PassengerCar(
+                    replacementCar = new PassengerCar(
                         model, color, maxSpeed, carNumber, bodyType,
                         InputNewEngine(),
                         InputNewTransmission(),
                         InputNewChassis()
-                        ));
+                        );
 
                     break;
 
                 default:
+                    throw new InitializationException($"Initialization Exeption. No such car type.");
+
                     break;
             }
-            DeleteCar(cars, carNumber);
+
+            if (replacementCar != null && 
+                replacementCar.IsValid())
+            {
+                DeleteCar(cars, carNumber);
+                cars.Add(replacementCar);
+            }
         }
 
         public static List<Vehicle> LoadAutoByParameters(string filename)
@@ -804,6 +816,7 @@ namespace CarPark
             return selectedCars.ToList();
         }
 
+        /*
         public static List<Vehicle> GetAutoByParameters(List<Vehicle> cars)
         {
             Vehicle carForComparision = InputNewCar();
@@ -834,6 +847,7 @@ namespace CarPark
 
             return selectedCars.ToList();
         }
+        */
 
         private static void XmlFileWriter(string filename, XElement xe)
         {
